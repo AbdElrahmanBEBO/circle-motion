@@ -1,8 +1,8 @@
 <?php
-    $ball_radius = 250;
-    $point_radius = 5;
-    $no_of_points = 6;
-    $speed = 2000;
+    $ball_radius = isset($_GET['ball_radius']) ? $_GET['ball_radius'] : 250;
+    $point_radius = isset($_GET['point_radius']) ? $_GET['point_radius'] : 5;
+    $no_of_points = isset($_GET['no_of_points']) ? $_GET['no_of_points'] : 20;
+    $speed = isset($_GET['speed']) ? $_GET['speed'] : 1000;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,11 +43,26 @@
                 top: calc(100vh/6);  left: calc(100vw/2 - 25px);
                 z-index: -1;
             }
+            .form{
+                position: absolute;
+                display: flex;
+                flex-direction: column;
+                left: 100px; top: calc(100vh/2 - 50px);
+            }
+            
         </style>
     </head>
     <body>
         <div id="root"></div>
         <div class="bebo">BEBO</div>
+
+        <form class="form"  method="GET">
+            <input type="number" placeholder="ball radius" name="ball_radius" required>
+            <input type="number" placeholder="point radius" name="point_radius" required>
+            <input type="number" placeholder="number of points" name="no_of_points" required>
+            <input type="number" placeholder="speed" name="speed" required>
+            <button>create</button>
+        </form>
         
         <script>
             let root = document.getElementById('root');
@@ -60,8 +75,7 @@
             const BALL_RADIUS = <?= $ball_radius ?>;
             const POINT_RADIUS = <?= $point_radius ?>;
             
-            let x = -1 * (BALL_RADIUS+POINT_RADIUS)
-            let y = 0;
+            let x = -1 * (BALL_RADIUS+POINT_RADIUS), y = 0;
 
             for (let i = 0; i < points.length; i++) {
                 points[i].style.left = `calc((100vw/2) + ${x}px)`;
@@ -74,15 +88,17 @@
             }
 
             function movePoint(p, x, y, interval) {
-                let curX = x, curY = y;
+                let flag = 0;
+                let Ps = [
+                    {x: -x-(POINT_RADIUS*2), y: -y-(POINT_RADIUS*2)},
+                    {x: x,y: y}
+                ]
+
                 setInterval(() => {                    
-                    curX = curX == -x-(POINT_RADIUS*2) ? x : -x-(POINT_RADIUS*2)
-                    curY = -curY-(POINT_RADIUS*2);
-
-                    p.style.left = `calc((100vw/2) + ${curX}px)`;
-                    p.style.top = `calc((100vh/2) + ${curY}px)`;
+                    p.style.left = `calc((100vw/2) + ${Ps[flag].x}px)`;
+                    p.style.top = `calc((100vh/2) + ${Ps[flag].y}px)`;
+                    flag = flag == 1 ? 0 : 1;
                 }, <?= $speed ?> + interval)
-
             }
         </script>
     </body>

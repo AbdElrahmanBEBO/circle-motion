@@ -91,7 +91,6 @@
             for (let i = 0; i < Ps.length; i++) 
                 setTimeout(() => movePoint(Ps[i]), i*220)
 
-
             function movePoint([p, x, y]) {
                 let flag = 0;
 
@@ -101,9 +100,18 @@
                 ]
 
                 setInterval(() => {
+                    p.style.background = 'red'
                     p.style.left = `calc((100vw/2) + ${Ps[flag].x}px)`;
                     p.style.top = `calc((100vh/2) + ${Ps[flag].y}px)`;
-                    flag = flag == 1 ? 0 : 1;
+                    
+                    if(flag == 1) {
+                        flag = 0
+                        p.style.background = 'aqua'
+                    }else{
+                        flag = 1
+                        p.style.background = 'green'
+                    }
+
                 }, <?= $speed ?>)
             }
         </script>

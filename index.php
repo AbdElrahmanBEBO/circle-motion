@@ -1,7 +1,7 @@
 <?php
-    $ball_radius = isset($_GET['ball_radius']) ? $_GET['ball_radius'] : 250;
-    $point_radius = isset($_GET['point_radius']) ? $_GET['point_radius'] : 5;
-    $no_of_points = isset($_GET['no_of_points']) ? $_GET['no_of_points'] : 20;
+    $ball_radius = 250;
+    $point_radius = 5;
+    $no_of_points = isset($_GET['no_of_points']) ? $_GET['no_of_points'] : 10;
     $speed = isset($_GET['speed']) ? $_GET['speed'] : 1000;
 ?>
 <!DOCTYPE html>
@@ -57,8 +57,6 @@
         <div class="bebo">BEBO</div>
 
         <form class="form"  method="GET">
-            <input type="number" placeholder="ball radius" name="ball_radius" required>
-            <input type="number" placeholder="point radius" name="point_radius" required>
             <input type="number" placeholder="number of points" name="no_of_points" required>
             <input type="number" placeholder="speed" name="speed" required>
             <button>create</button>
@@ -81,7 +79,7 @@
                 points[i].style.left = `calc((100vw/2) + ${x}px)`;
                 points[i].style.top = `calc((100vh/2) + ${y}px)`;
 
-                movePoint(points[i], x, y, i*100)
+                movePoint(points[i], x, y, i)
                 
                 x += (BALL_RADIUS*2)/(points.length)
                 y = Math.sqrt(Math.pow(BALL_RADIUS, 2) - Math.pow(x+POINT_RADIUS, 2)) - POINT_RADIUS;
@@ -94,11 +92,13 @@
                     {x: x,y: y}
                 ]
 
-                setInterval(() => {                    
+                for (let i = 0; i < 3500000*interval; i++) {}
+
+                setInterval(() => {
                     p.style.left = `calc((100vw/2) + ${Ps[flag].x}px)`;
                     p.style.top = `calc((100vh/2) + ${Ps[flag].y}px)`;
                     flag = flag == 1 ? 0 : 1;
-                }, <?= $speed ?> + interval)
+                }, <?= $speed ?>)
             }
         </script>
     </body>

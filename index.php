@@ -1,8 +1,8 @@
 <?php
-    $ball_radius = 250;
-    $point_radius = 5;
-    $no_of_points = isset($_GET['no_of_points']) ? $_GET['no_of_points'] : 10;
-    $speed = isset($_GET['speed']) ? $_GET['speed'] : 1000;
+    $ball_radius = 300; 
+    $point_radius = !empty($_GET['point_radius']) ? $_GET['point_radius'] : 10;
+    $no_of_points = !empty($_GET['no_of_points']) ? $_GET['no_of_points'] : 10;
+    $speed = !empty($_GET['speed']) ? $_GET['speed'] : 2000;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,15 +54,20 @@
     </head>
     <body>
         <div id="root"></div>
+        
         <div class="bebo">BEBO</div>
 
         <form class="form"  method="GET">
-            <input type="number" placeholder="number of points" name="no_of_points" required>
-            <input type="number" placeholder="speed" name="speed" required>
-            <button>create</button>
+            <input type="number" placeholder="point radius" name="point_radius">
+            <input type="number" placeholder="number of points" name="no_of_points">
+            <input type="number" placeholder="speed" name="speed">
+            <button>change</button>
         </form>
         
         <script>
+            const BALL_RADIUS = <?= $ball_radius ?>;
+            const POINT_RADIUS = <?= $point_radius ?>;
+            
             let root = document.getElementById('root');
 
             for (let i = 0; i < <?= $no_of_points ?>; i++) 
@@ -70,29 +75,30 @@
 
             let points = document.getElementsByClassName('point');
             
-            const BALL_RADIUS = <?= $ball_radius ?>;
-            const POINT_RADIUS = <?= $point_radius ?>;
             
-            let x = -1 * (BALL_RADIUS+POINT_RADIUS), y = 0;
+            let x = -1 * (BALL_RADIUS+POINT_RADIUS), y = 0, Ps = [];
 
             for (let i = 0; i < points.length; i++) {
+                Ps.push([points[i], x, y])
+                
                 points[i].style.left = `calc((100vw/2) + ${x}px)`;
                 points[i].style.top = `calc((100vh/2) + ${y}px)`;
-
-                movePoint(points[i], x, y, i)
-                
+                       
                 x += (BALL_RADIUS*2)/(points.length)
                 y = Math.sqrt(Math.pow(BALL_RADIUS, 2) - Math.pow(x+POINT_RADIUS, 2)) - POINT_RADIUS;
             }
 
-            function movePoint(p, x, y, interval) {
+            for (let i = 0; i < Ps.length; i++) 
+                setTimeout(() => movePoint(Ps[i]), i*220)
+
+
+            function movePoint([p, x, y]) {
                 let flag = 0;
+
                 let Ps = [
                     {x: -x-(POINT_RADIUS*2), y: -y-(POINT_RADIUS*2)},
                     {x: x,y: y}
                 ]
-
-                for (let i = 0; i < 3500000*interval; i++) {}
 
                 setInterval(() => {
                     p.style.left = `calc((100vw/2) + ${Ps[flag].x}px)`;
